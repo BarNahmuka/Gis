@@ -1,5 +1,5 @@
 import React from 'react';
-import './Maps.css'; 
+import './Maps.css';
 import image from './Images/red location sign.png';  // Correct path to the image
 import MapComponent from '../components/MapComponent';  // Correct path to the MapComponent
 function TechCompanies() {
@@ -27,18 +27,17 @@ function TechCompanies() {
         <input type="range" min="0" max="200" step="1" />
       </div>
 
-      <div className="tech-companies-container">
+      {/* <div className="tech-companies-container">
         <div className="tech-company">
           <h1>Tech Companies</h1>
           <ul>
-            <MapComponent />
+
           </ul>
         </div>
         <div className="tech-company">
           <h1>Demographic Population</h1>
           <ul>
             <li>Population A</li>
-            <li>Population B</li>
           </ul>
         </div>
         <div className="tech-company">
@@ -48,6 +47,9 @@ function TechCompanies() {
             <li>Impact B</li>
           </ul>
         </div>
+      </div> */}
+      <div className='mapsContainer'>
+        <MapComponent />
       </div>
     </div>
   );
