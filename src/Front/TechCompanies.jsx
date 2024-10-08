@@ -1,7 +1,7 @@
 import React from 'react';
 import './Maps.css'; 
 import image from './Images/red location sign.png';  // Correct path to the image
-
+import MapComponent from '../components/MapComponent';  // Correct path to the MapComponent
 function TechCompanies() {
   return (
     <div className="app-container">
@@ -31,8 +31,7 @@ function TechCompanies() {
         <div className="tech-company">
           <h1>Tech Companies</h1>
           <ul>
-            <li>Company A</li>
-            <li>Company B</li>
+            <MapComponent />
           </ul>
         </div>
         <div className="tech-company">

@@ -9,6 +9,7 @@ function App() {
       <header className="App-header">
         <div className="components-container">
           <TechCompanies />
+          
         </div>
       </header>
     </div>
