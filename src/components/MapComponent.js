@@ -1,11 +1,13 @@
 /* global L, json_CSVdemographic_2, json_CSVTech_1 */
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import Autolinker from 'autolinker';
 
 let map1, map2, map3; // Define map instances for each map
 
-const MapComponent = ({ populationRange }) => {  // Accept populationRange as a prop
+const MapComponent = ({ populationRange }) => {  
+  const demographicLayerRef = useRef(null); // Reference to store demographic layer
+
   useEffect(() => {
     if (!map1) {
       // Initialize Map 1 (Display only demographic data)
@@ -18,17 +20,22 @@ const MapComponent = ({ populationRange }) => {  // Accept populationRange as a 
       L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
       }).addTo(map1);
-    } else {
-      map1.eachLayer((layer) => {
-        if (layer.feature) {
-          map1.removeLayer(layer);
-        }
-      });
     }
 
-    // Add demographic data to Map 1, filter based on population range
-    const demographicLayer1 = L.geoJSON(json_CSVdemographic_2, {
-      filter: (feature) => feature.properties['סהכ'] <= populationRange,  // Filter by population
+
+
+    // Remove existing demographic layer before adding the new filtered data
+    if (demographicLayerRef.current) {
+      map1.removeLayer(demographicLayerRef.current);
+    }
+
+    // Add new demographic data filtered based on population range
+    demographicLayerRef.current = L.geoJSON(json_CSVdemographic_2, {
+      filter: (feature) => {
+        const population = feature.properties['סהכ'];
+        console.log('Feature Population:', population);  // Log the population of each feature
+        return population >= populationRange;  // Filter based on population being greater than or equal to selected range
+      },
       pointToLayer: (feature, latlng) => {
         return L.circleMarker(latlng, {
           radius: 4.0,
@@ -36,12 +43,17 @@ const MapComponent = ({ populationRange }) => {  // Accept populationRange as a 
           color: 'rgba(35,35,35,1.0)',
           weight: 1,
           opacity: 1,
-          fillOpacity: 1
+          fillOpacity: 1,
         });
       },
-      onEachFeature: pop_CSVdemographic_2
+      onEachFeature: pop_CSVdemographic_2,
     }).addTo(map1);
+    // Log the population range to see its value
+    console.log('Selected Population Range:', populationRange);
+  }, [populationRange]);
 
+  // For tech and combined maps, similar logic is followed
+  useEffect(() => {
     if (!map2) {
       // Initialize Map 2 (Display only tech company data)
       map2 = L.map('map2', {
@@ -111,37 +123,21 @@ const MapComponent = ({ populationRange }) => {  // Accept populationRange as a 
         onEachFeature: pop_CSVTech_1
       }).addTo(map3);
     }
-
-    // Cleanup function to avoid reinitializing the maps
-    return () => {
-      if (map1) {
-        map1.remove();
-        map1 = null;
-      }
-      if (map2) {
-        map2.remove();
-        map2 = null;
-      }
-      if (map3) {
-        map3.remove();
-        map3 = null;
-      }
-    };
-  }, [populationRange]);  // Re-render map when populationRange changes
+  }, []);  // Initial effect for maps 2 and 3
 
   // The return statement renders the maps side by side using flexbox
   return (
-      <div style={{display:'flex', gap:'5px'}}>
-        <div id="map1" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
-            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Demographic Data</h1>
-        </div>
-        <div id="map2" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
-            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Tech Company Data</h1>
-        </div>
-        <div id="map3" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
-            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Both Demographic and Tech Company Data</h1>
-        </div>
+    <div style={{ display: 'flex', gap: '5px' }}>
+      <div id="map1" style={{ height: '80vh', width: '33%', display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ zIndex: '1000', width: 'auto', backgroundColor: 'white' }}>Demographic Data</h1>
       </div>
+      <div id="map2" style={{ height: '80vh', width: '33%', display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ zIndex: '1000', width: 'auto', backgroundColor: 'white' }}>Tech Company Data</h1>
+      </div>
+      <div id="map3" style={{ height: '80vh', width: '33%', display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ zIndex: '1000', width: 'auto', backgroundColor: 'white' }}>Both Demographic and Tech Company Data</h1>
+      </div>
+    </div>
   );
 };
 
