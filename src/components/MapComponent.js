@@ -127,11 +127,17 @@ const MapComponent = () => {
 
   // The return statement renders the maps side by side using flexbox
   return (
-    <div style={{ display: 'flex', gap: '10px' }}>
-      <div id="map1" style={{ height: '500px', width: '33%' }}></div>
-      <div id="map2" style={{ height: '500px', width: '33%' }}></div>
-      <div id="map3" style={{ height: '500px', width: '33%' }}></div>
-    </div>
+      <div style={{display:'flex', gap:'5px'}}>
+        <div id="map1" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
+            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Demographic Data</h1>
+        </div>
+        <div id="map2" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
+            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Tech Company Data</h1>
+        </div>
+        <div id="map3" style={{ height: '80vh', width: '33%' , display: 'flex', flexDirection:'column' }}>
+            <h1 style={{ zIndex:'1000', width:'auto' , backgroundColor:'white'}}>Both Demographic and Tech Company Data</h1>
+        </div>
+      </div>
   );
 };
 
