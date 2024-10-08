@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Maps.css';
 import image from './Images/red location sign.png';  // Correct path to the image
 import MapComponent from '../components/MapComponent';  // Correct path to the MapComponent
 function TechCompanies() {
+  const [populationRange, setPopulationRange] = useState(200);  // State to hold the population range
+
+  const handlePopulationChange = (event) => {
+    setPopulationRange(event.target.value);  // Update the population range when user changes input
+  };
   return (
     <div className="app-container">
       <div className="options">
@@ -23,34 +28,16 @@ function TechCompanies() {
           <option value="herzliya">Herzliya</option>
         </select>
 
-        <label style={{ fontSize: '17px' }}>Select population (0 - 200 km):</label>
-        <input type="range" min="0" max="200" step="1" />
+        <label style={{ fontSize: '17px' }}>Select population (0 - 500,000):</label>
+        <input type="range" min="0" max="500,000" step="10" 
+        value={populationRange} 
+        onChange={handlePopulationChange}/>
       </div>
 
-      {/* <div className="tech-companies-container">
-        <div className="tech-company">
-          <h1>Tech Companies</h1>
-          <ul>
-
-          </ul>
-        </div>
-        <div className="tech-company">
-          <h1>Demographic Population</h1>
-          <ul>
-            <li>Population A</li>
-          </ul>
-        </div>
-        <div className="tech-company">
-          <h1>Impact of Tech Distribution on Demographics</h1>
-          <ul>
-            <li>Impact A</li>
-            <li>Impact B</li>
-          </ul>
-        </div>
-      </div> */}
       <div className='mapsContainer'>
-        <MapComponent />
+        <MapComponent populationRange={populationRange}/>
       </div>
+
     </div>
   );
 }

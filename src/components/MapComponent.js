@@ -5,7 +5,7 @@ import Autolinker from 'autolinker';
 
 let map1, map2, map3; // Define map instances for each map
 
-const MapComponent = () => {
+const MapComponent = ({ populationRange }) => {  // Accept populationRange as a prop
   useEffect(() => {
     if (!map1) {
       // Initialize Map 1 (Display only demographic data)
@@ -16,25 +16,31 @@ const MapComponent = () => {
       }).fitBounds([[29.58558648296286, 31.59799699704964], [33.50312293796286, 37.72679302032426]]);
 
       L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
         maxZoom: 19,
       }).addTo(map1);
-
-      // Add demographic data to Map 1
-      const demographicLayer1 = L.geoJSON(json_CSVdemographic_2, {
-        pointToLayer: (feature, latlng) => {
-          return L.circleMarker(latlng, {
-            radius: 4.0,
-            fillColor: 'rgba(231,74,72,1.0)',
-            color: 'rgba(35,35,35,1.0)',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 1
-          });
-        },
-        onEachFeature: pop_CSVdemographic_2
-      }).addTo(map1);
+    } else {
+      map1.eachLayer((layer) => {
+        if (layer.feature) {
+          map1.removeLayer(layer);
+        }
+      });
     }
+
+    // Add demographic data to Map 1, filter based on population range
+    const demographicLayer1 = L.geoJSON(json_CSVdemographic_2, {
+      filter: (feature) => feature.properties['סהכ'] <= populationRange,  // Filter by population
+      pointToLayer: (feature, latlng) => {
+        return L.circleMarker(latlng, {
+          radius: 4.0,
+          fillColor: 'rgba(231,74,72,1.0)',
+          color: 'rgba(35,35,35,1.0)',
+          weight: 1,
+          opacity: 1,
+          fillOpacity: 1
+        });
+      },
+      onEachFeature: pop_CSVdemographic_2
+    }).addTo(map1);
 
     if (!map2) {
       // Initialize Map 2 (Display only tech company data)
@@ -45,7 +51,6 @@ const MapComponent = () => {
       }).fitBounds([[29.58558648296286, 31.59799699704964], [33.50312293796286, 37.72679302032426]]);
 
       L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
         maxZoom: 19,
       }).addTo(map2);
 
@@ -74,7 +79,6 @@ const MapComponent = () => {
       }).fitBounds([[29.58558648296286, 31.59799699704964], [33.50312293796286, 37.72679302032426]]);
 
       L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
         maxZoom: 19,
       }).addTo(map3);
 
@@ -123,7 +127,7 @@ const MapComponent = () => {
         map3 = null;
       }
     };
-  }, []);
+  }, [populationRange]);  // Re-render map when populationRange changes
 
   // The return statement renders the maps side by side using flexbox
   return (
